@@ -9,6 +9,28 @@
 
           <v-list subheader two-line flat>
             <v-list-item-group>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+
+                    <v-text-field
+                      v-model="newTask.title"
+                      id="newTodo"
+                      name="newTodo"
+                      label="Type your task"
+                      @keyup.enter="addingTask()"
+                      :hint="todoExists ? 'Task already exists!' : ''"
+                      persistent-hint
+                    />
+                  </v-list-item-title>
+                </v-list-item-content>
+                    
+                <v-btn fab ripple small color="red" @click="addingTask()">
+                  ADD TODO
+                </v-btn>
+
+              </v-list-item>
+
               <v-list-item v-for="task in data.tasks">
                 <template >
 
@@ -20,17 +42,12 @@
           </v-list>
         </v-card>
 
-        <v-btn fab ripple small color="red" @click="createTask()">
-          ADD TODO
-        </v-btn>
-
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts" setup>
-
 const getTasksQuery = gql`
   query getTasks{
     tasks {
@@ -39,9 +56,11 @@ const getTasksQuery = gql`
       state
     }
   }
-`
+`;
 
-const createTaskMutation  = gql`
+const { data } = useAsyncQuery(getTasksQuery, { variables: { limit: 5 } });
+
+const createTaskMutation = gql`
   mutation createTask($title: String!){
     createTask (title: $title) {
       id
@@ -49,13 +68,29 @@ const createTaskMutation  = gql`
       state
     }
   }
-`
+`;
 
-const variables = {
-  title: 'laundry',
-}
+const todoExists = computed(() => {
+  // Check if the new task title already exists in the current list of tasks
+  return data.value.tasks.some(task => task.title === newTask.value.title);
+});
 
-const { mutate: createTask } = useMutation(createTaskMutation , {variables})
+const newTask = ref({
+  title: '',
+});
 
-const { data } = await useAsyncQuery(getTasksQuery, {variables: {limit: 5}})
+const addingTask = async () => {
+  try {
+    await createTask({ title: newTask.value.title });
+    newTask.value.title = ''; // Clear the input field after adding task
+  } catch (error) {
+    console.error('Error adding task:', error);
+  }
+};
+
+const { mutate: createTask } = useMutation(createTaskMutation, {
+  refetchQueries: [{ query: getTasksQuery }],
+});
+
+
 </script>
