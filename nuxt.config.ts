@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     authType: 'Bearer',
     authHeader: 'Authorization',
     tokenStorage: 'cookie',
+    proxyCookies: true,
     clients: {
       default: {
         httpEndpoint: 'http://digi-backend.test/graphql'

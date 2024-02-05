@@ -10,12 +10,14 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@mdi/font": "^7.4.47",
     "@nuxtjs/apollo": "^5.0.0-alpha.11",
     "nuxt": "^3.10.0",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@vue/apollo-composable": "^4.0.1",
     "nuxt-graphql-client": "^0.2.33",
     "sass": "^1.70.0",
     "vuetify": "^3.5.2"
