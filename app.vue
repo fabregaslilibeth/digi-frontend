@@ -1,96 +1,86 @@
 <template>
-  <v-container>
-    <v-row justify="center" class="ma-5">
-      <v-col xs="12" sm="8">
-        <v-card>
-          <v-toolbar color="teal darken-4" dark>
-            <v-toolbar-title class="headline">To Do List</v-toolbar-title>
-          </v-toolbar>
+  <v-card
+   class="mx-auto"
+   max-width="700"
+  >
+   <v-list density="compact">
+     <v-list-subheader>TO DO LIST</v-list-subheader>
+     <v-list-item>
+       <v-text-field
+         v-model="newTask.title"
+         id="newTodo"
+         name="newTodo"
+         label="Type your task, hit enter to add"
+         @keyup.enter="addingTask()"
+         :hint="todoExists ? 'Task already exists!' : ''"
+         persistent-hint
+       />
+     </v-list-item>
+   </v-list>
 
-          <v-list subheader two-line flat>
-            <v-list-item-group>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>
-
-                    <v-text-field
-                      v-model="newTask.title"
-                      id="newTodo"
-                      name="newTodo"
-                      label="Type your task"
-                      @keyup.enter="addingTask()"
-                      :hint="todoExists ? 'Task already exists!' : ''"
-                      persistent-hint
-                    />
-                  </v-list-item-title>
-                </v-list-item-content>
-                    
-                <v-btn fab ripple small color="red" @click="addingTask()">
-                  ADD TODO
-                </v-btn>
-
-              </v-list-item>
-
-              <v-list-item v-for="task in data.tasks">
-                <template >
-
-                 <task :task="task" :key="task.id"></task>
-                  
-                </template>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-card>
-
-      </v-col>
-    </v-row>
-  </v-container>
+   <v-list density="compact">
+     <task v-for="(task, i) in data?.tasks" :task="task" :key="task.id" @taskDeleted="removeTask"></task>
+   </v-list>
+ </v-card>
 </template>
 
 <script lang="ts" setup>
 const getTasksQuery = gql`
-  query getTasks{
-    tasks {
-      id
-      title
-      state
-    }
-  }
+ query getTasks {
+   tasks {
+     id
+     title
+     state
+   }
+ }
 `;
-
-const { data } = useAsyncQuery(getTasksQuery, { variables: { limit: 5 } });
 
 const createTaskMutation = gql`
-  mutation createTask($title: String!){
-    createTask (title: $title) {
-      id
-      title
-      state
-    }
-  }
+ mutation createTask($title: String!) {
+   createTask(title: $title) {
+     id
+     title
+     state
+   }
+ }
 `;
 
-const todoExists = computed(() => {
-  // Check if the new task title already exists in the current list of tasks
-  return data.value.tasks.some(task => task.title === newTask.value.title);
-});
+const { data, refresh } = useAsyncQuery(getTasksQuery);
 
 const newTask = ref({
-  title: '',
+ title: '',
+});
+
+const { mutate: createTask } = useMutation(createTaskMutation, {
+ refetchQueries: [{ query: getTasksQuery }],
+});
+
+const todoExists = computed(() => {
+ return data.value?.tasks.some(task => task.title === newTask.value.title);
 });
 
 const addingTask = async () => {
-  try {
-    await createTask({ title: newTask.value.title });
-    newTask.value.title = ''; // Clear the input field after adding task
-  } catch (error) {
-    console.error('Error adding task:', error);
-  }
+ try {
+    if (todoExists.value) {
+      // Task already exists, do not create a new one
+      return;
+    }
+
+   const response = await createTask({ title: newTask.value.title });
+   const createdTask = response.data.createTask;
+   data.value.tasks.push(createdTask); // Update local state with the new task
+   newTask.value.title = ''; // Clear the input field after adding task
+ } catch (error) {
+   console.error('Error adding task:', error);
+ }
 };
 
-const { mutate: createTask } = useMutation(createTaskMutation, {
-  refetchQueries: [{ query: getTasksQuery }],
-});
-
-
+const removeTask = (taskId) => {
+  const index = data.value.tasks.findIndex(task => task.id === taskId);
+  if (index < 0) {
+      // Task is not found
+      return;
+    }
+  data.value.tasks.splice(index, 1)
+}
 </script>

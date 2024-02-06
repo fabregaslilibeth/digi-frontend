@@ -1,75 +1,57 @@
-# Nuxt 3 Minimal Starter
+# To-Do List Application
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Overview
+
+This project is a simple To-Do List application built with Vue.js and GraphQL. It allows users to manage their tasks by adding, updating, and deleting them. The application utilizes GraphQL mutations to interact with the backend server for task management operations.
+
+## Features
+
+- Add new tasks to the to-do list.
+- Mark tasks as completed.
+- Delete tasks from the list.
 
 ## Setup
 
-Make sure to install the dependencies:
+1. Clone the repository:
 
-```bash
-# npm
-npm install
+   ```
+   git clone https://github.com/fabregaslilibeth/digi-frontend.git
+   ```
 
-# pnpm
-pnpm install
+2. Install dependencies
+    ```
+    cd todo-list
+    npm install
+    ```
 
-# yarn
-yarn install
+3. Configure GraphQL endpoint:
 
-# bun
-bun install
-```
+  Update the GraphQL endpoint URL in the nuxt.config.ts file to match your backend server. Default is http://digi-backend.test/graphql
 
-## Development Server
+4. Run the application:
 
-Start the development server on `http://localhost:3000`:
+    ```
+    npm run dev
+    ```
 
-```bash
-# npm
-npm run dev
+5. Access the application:
+  Open your web browser and navigate to http://localhost:3000 to access the To-Do List application.
 
-# pnpm
-pnpm run dev
 
-# yarn
-yarn dev
+## File Structure
+  - components/Task.vue: Vue.js component for rendering individual task items.
+  - plugins/vuetify.js Configuration file for vuetify
+  - nuxt.config.ts: Configuration file for setting up Apollo Client to communicate with the GraphQL server.
+  - app.vue: Entry point of the Vue.js application and where the tasks list are
+  - Other files: Various configuration files and dependencies required for the project.
 
-# bun
-bun run dev
-```
 
-## Production
+## Technologies Used
+  - nuxt.js: JavaScript framework for building user interfaces.
+  - GraphQL: Query language for APIs.
+  - Apollo Client: GraphQL client for Vue.js applications.
+  - TypeScript: Typed superset of JavaScript.
+  - SCSS: CSS preprocessor for styling.
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Contributors
+Lilibeth Fabregas

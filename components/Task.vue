@@ -1,21 +1,19 @@
 <template>
-  <v-row>
-    <v-list-item-action>
-      <v-checkbox v-model="is_completed" @click="updatingTask()"></v-checkbox>
-    </v-list-item-action>
+   <v-list-item>
+    <template v-slot:prepend>
+      <v-icon v-if="is_completed">mdi mdi-checkbox-marked-circle</v-icon>
+      <v-icon v-else @click="updatingTask()">mdi mdi-checkbox-blank-circle-outline</v-icon>
+    </template>
 
-    <v-list-item-content>
-      <v-list-item-title :class="{done: active}">{{ task.title }} {{  task.state }} </v-list-item-title>
-    </v-list-item-content>
+    <v-list-item-title v-text="task.title" :class="{done: is_completed}"></v-list-item-title>
 
-    <v-btn fab ripple small color="red" @click="deletingTask()">
-      <v-icon class="white--text">mdi-close</v-icon>
-    </v-btn>
-
-  </v-row>
+    <template v-slot:append>
+      <v-icon @click="deletingTask()">mdi-delete</v-icon>
+    </template>
+    </v-list-item>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 
 const props = defineProps({
   task: {
@@ -23,6 +21,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const emits = defineEmits(['taskDeleted']); // Define custom event
 
 const is_completed = ref(props.task.state === 'done');
 
@@ -32,7 +32,7 @@ watchEffect(() => {
 
 const variables = {
   id: props.task.id,
-  state: props.task.state === 'done' ? 'todo' : 'done'
+  state: 'done'
 }
 
 const updateTaskMutation = gql`
@@ -50,6 +50,7 @@ const { mutate: updateTask } = useMutation(updateTaskMutation , { variables })
 const updatingTask = async () => {
   try {
     await updateTask();
+    is_completed.value = true
   } catch (error) {
     console.error('Error updating task:', error);
   }
@@ -70,8 +71,16 @@ const { mutate: deleteTask } = useMutation(deleteTaskMutation , {variables: {id:
 const deletingTask = async () => {
   try {
     await deleteTask();
+    emits('taskDeleted', props.task.id); 
   } catch (error) {
     console.error('Error deleting task:', error);
   }
 };
+
 </script>
+
+<style lang="scss">
+.done {
+  text-decoration: line-through;
+}
+</style>

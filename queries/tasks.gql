@@ -1,7 +1,0 @@
-query getTasks($limit: Int = 5) {
-  tasks(limit: $limit) {
-    id
-    launch_year
-    mission_name
-  }
-}
