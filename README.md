@@ -20,13 +20,13 @@ This project is a simple To-Do List application built with Vue.js and GraphQL. I
 
 2. Install dependencies
     ```
-    cd todo-list
+    cd digi-frontend
     npm install
     ```
 
 3. Configure GraphQL endpoint:
 
-  Update the GraphQL endpoint URL in the nuxt.config.ts file to match your backend server. Default is http://digi-backend.test/graphql
+  Update the GraphQL endpoint URL in the nuxt.config.ts file to match your backend server. Make sure first that the backend server is running. Default is http://digi-backend.test/graphql
 
 4. Run the application:
 
