@@ -55,3 +55,6 @@ This project is a simple To-Do List application built with Vue.js and GraphQL. I
 
 ## Contributors
 Lilibeth Fabregas
+
+
+For the short documentation on my approach on this project, please go [here](https://docs.google.com/document/d/1SEbf4IcNomcF6AKVGtjHm45EF1wlcSUljMNwlClhN5g/edit)
