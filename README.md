@@ -9,6 +9,7 @@ This project is a simple To-Do List application built with Vue.js and GraphQL. I
 - Add new tasks to the to-do list.
 - Mark tasks as completed.
 - Delete tasks from the list.
+- Get all tasks.
 
 ## Setup
 
